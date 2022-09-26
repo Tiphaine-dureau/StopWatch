@@ -1,3 +1,5 @@
+import Model.ChronoModel;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,22 +15,16 @@ public class Chrono extends JFrame {
     private JLabel[] screen = new JLabel[4];
     //Cette variable stocke la dimension des boutons:
     private Dimension dimension = new Dimension(90, 70);
-    //Cette variable permet de connaitre combien de fois on a actionné le bouton Lap :
-    private int lapClickCounter = 0; // TODO ChronoModel
-
-    //Les variables qui vont permettre de calculer le temps et simuler le chrono :
-    long savedTimeInMilliseconds = 0;
-    long currentTimeInMilliseconds = 0;
-    long savedTimeInMillisecondsOnBreakStart = 0;
-    long savedTimeInMillisecondsOnBreakEnd = 0; // TODO ChronoModel
 
     //Les variables qui vont permettre de formater ce temps en format : hh : mm :ss.mili
     long hour;
     long minute;
     long second;
     long milisecond; // TODO TimerModel
+
     //Le SwingWorker qui va permettre de lancer le chrono en Background pour ne pas bloquer l'application
     private SwingWorker<Void, Integer> worker;
+    private ChronoModel chronoModel;
 
 
     //Constructeur classe Chrono
@@ -43,6 +39,8 @@ public class Chrono extends JFrame {
         //On ajoute le conteneur à la fenêtre;
         this.setContentPane(container);
         this.setVisible(true);
+        this.chronoModel = new ChronoModel();
+
     }
 
     // TODO View
@@ -107,14 +105,18 @@ public class Chrono extends JFrame {
         worker = new SwingWorker<>() {
             @Override
             protected Void doInBackground() throws Exception {
-                savedTimeInMilliseconds = savedTimeInMilliseconds + (savedTimeInMillisecondsOnBreakEnd - savedTimeInMillisecondsOnBreakStart);
-                savedTimeInMillisecondsOnBreakStart = savedTimeInMillisecondsOnBreakEnd = 0;
+                //savedTimeInMilliseconds = savedTimeInMilliseconds + (savedTimeInMillisecondsOnBreakEnd - savedTimeInMillisecondsOnBreakStart);
+                chronoModel.setSavedTimeInMilliseconds(chronoModel.getSavedTimeInMilliseconds() + (chronoModel.getSavedTimeInMillisecondsOnBreakEnd() - chronoModel.getSavedTimeInMillisecondsOnBreakStart()));
+                chronoModel.setSavedTimeInMillisecondsOnBreakStart(0);
+                chronoModel.setSavedTimeInMillisecondsOnBreakEnd(0);
+
+
 
                 while (!isCancelled()) {
-                    currentTimeInMilliseconds = System.currentTimeMillis() - savedTimeInMilliseconds;
-                    currentTimeInMilliseconds /= 10;
-                    milisecond = currentTimeInMilliseconds % 100;
-                    second = currentTimeInMilliseconds / 100;
+                    chronoModel.setCurrentTimeInMilliseconds(System.currentTimeMillis() - chronoModel.getSavedTimeInMilliseconds());
+                    chronoModel.setCurrentTimeInMilliseconds(chronoModel.getCurrentTimeInMilliseconds() / 10);
+                    milisecond = chronoModel.getCurrentTimeInMilliseconds() % 100;
+                    second = chronoModel.getCurrentTimeInMilliseconds() / 100;
                     minute = second / 60;
                     hour = minute / 60;
                     screen[0].setText(String.format("%02d", hour) + ":" + String.format("%02d", minute) + ":" + String.format("%02d", second) + ":" + String.format("%02d", milisecond));
@@ -131,7 +133,7 @@ public class Chrono extends JFrame {
     class StartListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent arg0) {
-            savedTimeInMilliseconds = System.currentTimeMillis();
+            chronoModel.setSavedTimeInMilliseconds(System.currentTimeMillis());
             initializeWorker();
             worker.execute();
             jButtons[0].setEnabled(false);
@@ -145,11 +147,11 @@ public class Chrono extends JFrame {
     class LapListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent arg0) {
-            if (lapClickCounter == 3)
+            if (chronoModel.getLapClickCounter() == 3)
                 jButtons[1].setEnabled(false);
-            screen[lapClickCounter].setText(lapClickCounter + ":" + String.format("%02d", hour) + ":" + String.format("%02d", minute) + ":" + String.format("%02d", second) + ":" + String.format("%02d", milisecond));
+            screen[chronoModel.getLapClickCounter()].setText(chronoModel.getLapClickCounter() + ":" + String.format("%02d", hour) + ":" + String.format("%02d", minute) + ":" + String.format("%02d", second) + ":" + String.format("%02d", milisecond));
             //screen[lap].paintImmediately(screen[lap].getVisibleRect()); ENLEVÉE CAR FAIT BUGUER LE VISUEL
-            lapClickCounter++;
+            chronoModel.setLapClickCounter(chronoModel.getLapClickCounter() +1);
         }
     }
 
@@ -157,7 +159,7 @@ public class Chrono extends JFrame {
     class StopListener implements ActionListener {
         public void actionPerformed(ActionEvent arg0) {
             worker.cancel(true);
-            savedTimeInMillisecondsOnBreakStart = System.currentTimeMillis();
+            chronoModel.setSavedTimeInMillisecondsOnBreakStart(System.currentTimeMillis());
             jButtons[2].setEnabled(false);
             jButtons[3].setEnabled(true);
         }
@@ -166,7 +168,7 @@ public class Chrono extends JFrame {
     //Listener affecté au bouton Resume
     class ResumeListener implements ActionListener {
         public void actionPerformed(ActionEvent arg0) {
-            savedTimeInMillisecondsOnBreakEnd = System.currentTimeMillis();
+            chronoModel.setSavedTimeInMillisecondsOnBreakEnd(System.currentTimeMillis());
             initializeWorker();
             worker.execute();
             jButtons[2].setEnabled(true);
@@ -178,8 +180,13 @@ public class Chrono extends JFrame {
     class ResetListener implements ActionListener {
         public void actionPerformed(ActionEvent arg0) {
             worker.cancel(true);
-            hour = minute = second = milisecond = savedTimeInMillisecondsOnBreakStart = savedTimeInMillisecondsOnBreakEnd = 0;
-            lapClickCounter = 1;
+            hour = 0;
+            minute = 0;
+            second = 0;
+            milisecond = 0;
+            chronoModel.setSavedTimeInMillisecondsOnBreakStart(0);
+            chronoModel.setSavedTimeInMillisecondsOnBreakEnd(0);
+            chronoModel.setLapClickCounter(1);
             for (int i = 0; i < 4; i++) {
                 if (i == 0) {
                     screen[i].setText("00:00:00:00");
