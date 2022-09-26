@@ -1,5 +1,3 @@
-import Model.Buttons;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,11 +14,19 @@ public class Chrono extends JFrame {
     //Cette variable stocke la dimension des boutons:
     private Dimension dimension = new Dimension(90, 70);
     //Cette variable permet de connaitre combien de fois on a actionné le bouton Lap :
-    private int lap = 0; // TODO ChronoModel
+    private int lapClickCounter = 0; // TODO ChronoModel
+
     //Les variables qui vont permettre de calculer le temps et simuler le chrono :
-    long initVar, nowVar, breakStart = 0, breakEnd = 0; // TODO ChronoModel
+    long savedTimeInMilliseconds = 0;
+    long currentTimeInMilliseconds = 0;
+    long savedTimeInMillisecondsOnBreakStart = 0;
+    long savedTimeInMillisecondsOnBreakEnd = 0; // TODO ChronoModel
+
     //Les variables qui vont permettre de formater ce temps en format : hh : mm :ss.mili
-    long hour, minute, second, milisecond; // TODO TimerModel
+    long hour;
+    long minute;
+    long second;
+    long milisecond; // TODO TimerModel
     //Le SwingWorker qui va permettre de lancer le chrono en Background pour ne pas bloquer l'application
     private SwingWorker<Void, Integer> worker;
 
@@ -101,14 +107,14 @@ public class Chrono extends JFrame {
         worker = new SwingWorker<>() {
             @Override
             protected Void doInBackground() throws Exception {
-                initVar = initVar + (breakEnd - breakStart);
-                breakStart = breakEnd = 0;
+                savedTimeInMilliseconds = savedTimeInMilliseconds + (savedTimeInMillisecondsOnBreakEnd - savedTimeInMillisecondsOnBreakStart);
+                savedTimeInMillisecondsOnBreakStart = savedTimeInMillisecondsOnBreakEnd = 0;
 
                 while (!isCancelled()) {
-                    nowVar = System.currentTimeMillis() - initVar;
-                    nowVar /= 10;
-                    milisecond = nowVar % 100;
-                    second = nowVar / 100;
+                    currentTimeInMilliseconds = System.currentTimeMillis() - savedTimeInMilliseconds;
+                    currentTimeInMilliseconds /= 10;
+                    milisecond = currentTimeInMilliseconds % 100;
+                    second = currentTimeInMilliseconds / 100;
                     minute = second / 60;
                     hour = minute / 60;
                     screen[0].setText(String.format("%02d", hour) + ":" + String.format("%02d", minute) + ":" + String.format("%02d", second) + ":" + String.format("%02d", milisecond));
@@ -125,7 +131,7 @@ public class Chrono extends JFrame {
     class StartListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent arg0) {
-            initVar = System.currentTimeMillis();
+            savedTimeInMilliseconds = System.currentTimeMillis();
             initializeWorker();
             worker.execute();
             jButtons[0].setEnabled(false);
@@ -139,11 +145,11 @@ public class Chrono extends JFrame {
     class LapListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent arg0) {
-            if (lap == 3)
+            if (lapClickCounter == 3)
                 jButtons[1].setEnabled(false);
-            screen[lap].setText(lap + ":" + String.format("%02d", hour) + ":" + String.format("%02d", minute) + ":" + String.format("%02d", second) + ":" + String.format("%02d", milisecond));
+            screen[lapClickCounter].setText(lapClickCounter + ":" + String.format("%02d", hour) + ":" + String.format("%02d", minute) + ":" + String.format("%02d", second) + ":" + String.format("%02d", milisecond));
             //screen[lap].paintImmediately(screen[lap].getVisibleRect()); ENLEVÉE CAR FAIT BUGUER LE VISUEL
-            lap++;
+            lapClickCounter++;
         }
     }
 
@@ -151,7 +157,7 @@ public class Chrono extends JFrame {
     class StopListener implements ActionListener {
         public void actionPerformed(ActionEvent arg0) {
             worker.cancel(true);
-            breakStart = System.currentTimeMillis();
+            savedTimeInMillisecondsOnBreakStart = System.currentTimeMillis();
             jButtons[2].setEnabled(false);
             jButtons[3].setEnabled(true);
         }
@@ -160,7 +166,7 @@ public class Chrono extends JFrame {
     //Listener affecté au bouton Resume
     class ResumeListener implements ActionListener {
         public void actionPerformed(ActionEvent arg0) {
-            breakEnd = System.currentTimeMillis();
+            savedTimeInMillisecondsOnBreakEnd = System.currentTimeMillis();
             initializeWorker();
             worker.execute();
             jButtons[2].setEnabled(true);
@@ -172,8 +178,8 @@ public class Chrono extends JFrame {
     class ResetListener implements ActionListener {
         public void actionPerformed(ActionEvent arg0) {
             worker.cancel(true);
-            hour = minute = second = milisecond = breakStart = breakEnd = 0;
-            lap = 1;
+            hour = minute = second = milisecond = savedTimeInMillisecondsOnBreakStart = savedTimeInMillisecondsOnBreakEnd = 0;
+            lapClickCounter = 1;
             for (int i = 0; i < 4; i++) {
                 if (i == 0) {
                     screen[i].setText("00:00:00:00");
