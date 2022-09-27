@@ -23,7 +23,6 @@ public class ChronoController extends JFrame {
     private ChronoModel chronoModel;
 
 
-    //Constructeur classe Controller.ChronoController
     public ChronoController() {
         this.setSize(350, 435);
         this.setTitle("Chronomètre");

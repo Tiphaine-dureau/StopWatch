@@ -1,19 +1,17 @@
 package Controller;
 
+import View.ActionView;
+
 import java.awt.event.ActionListener;
 
 public abstract class ChronoActionController implements ActionListener {
-
-    private final String label;
     private Boolean isEnabled;
+    private ActionView actionView;
 
     public ChronoActionController(String label) {
-        this.label = label;
         this.isEnabled = false;
-    }
+        this.actionView = new ActionView(label);
 
-    public String getLabel() {
-        return label;
     }
 
     public Boolean getEnabled() {
