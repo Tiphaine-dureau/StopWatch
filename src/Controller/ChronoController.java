@@ -1,15 +1,17 @@
+package Controller;
+
 import Model.ChronoModel;
-import Model.TimerModel;
+
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
-public class Chrono extends JFrame {
+public class ChronoController extends JFrame {
     private JPanel container = new JPanel();
-    //Tableau stockant les éléments à afficher dans le Chrono:
-    String[] arrayOfString = {"Start", "Lap", "Stop", "Resume", "Reset"}; // TODO ChronoEnum (model)
+    //Tableau stockant les éléments à afficher dans le Controller.ChronoController:
+    String[] arrayOfString = {"Start", "Lap", "Stop", "Resume", "Reset"};
     //Un bouton par élément à afficher :
     JButton[] jButtons = new JButton[arrayOfString.length];
     // 4 JLabel : 1 pour le chrono principal et 3 pour les 3 lap en dessous
@@ -21,8 +23,8 @@ public class Chrono extends JFrame {
     private ChronoModel chronoModel;
 
 
-    //Constructeur classe Chrono
-    public Chrono() {
+    //Constructeur classe Controller.ChronoController
+    public ChronoController() {
         this.setSize(350, 435);
         this.setTitle("Chronomètre");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

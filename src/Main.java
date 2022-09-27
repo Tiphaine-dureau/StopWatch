@@ -1,5 +1,7 @@
+import Controller.ChronoController;
+
 public class Main {
     public static void main(String[] args) throws InterruptedException{
-        Chrono chrono = new Chrono();
+        ChronoController chronoController = new ChronoController();
     }
 }
