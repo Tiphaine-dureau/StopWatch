@@ -1,6 +1,6 @@
 package Model;
 
-public enum Buttons {
+public enum ChronoButtonsModel {
     START,
     LAP,
     STOP,

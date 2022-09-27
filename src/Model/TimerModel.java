@@ -5,7 +5,7 @@ public class TimerModel {
     long hour;
     long minute;
     long second;
-    long milisecond;
+    long millisecond;
 
     public long getHour() {
         return hour;
@@ -31,11 +31,11 @@ public class TimerModel {
         this.second = second;
     }
 
-    public long getMilisecond() {
-        return milisecond;
+    public long getMillisecond() {
+        return millisecond;
     }
 
-    public void setMilisecond(long milisecond) {
-        this.milisecond = milisecond;
+    public void setMillisecond(long millisecond) {
+        this.millisecond = millisecond;
     }
 }

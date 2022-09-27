@@ -1,16 +1,33 @@
 package Model;
 
 public class ChronoModel {
+    private TimerModel timerModel;
 
     //Cette variable permet de connaitre combien de fois on a actionné le bouton Lap :
-    private int lapClickCounter = 0;
+    private int lapClickCounter;
 
     //Les variables qui vont permettre de calculer le temps et simuler le chrono :
-    long savedTimeInMilliseconds = 0;
-    long currentTimeInMilliseconds = 0;
-    long savedTimeInMillisecondsOnBreakStart = 0;
-    long savedTimeInMillisecondsOnBreakEnd = 0;
+    long savedTimeInMilliseconds;
+    long currentTimeInMilliseconds;
+    long savedTimeInMillisecondsOnBreakStart;
+    long savedTimeInMillisecondsOnBreakEnd;
 
+    public ChronoModel() {
+        this.timerModel = new TimerModel();
+        this.lapClickCounter = 0;
+        this.savedTimeInMilliseconds = 0;
+        this.currentTimeInMilliseconds = 0;
+        this.savedTimeInMillisecondsOnBreakStart = 0;
+        this.savedTimeInMillisecondsOnBreakEnd = 0;
+    }
+
+    public TimerModel getTimerModel() {
+        return timerModel;
+    }
+
+    public void setTimerModel(TimerModel timerModel) {
+        this.timerModel = timerModel;
+    }
 
     public int getLapClickCounter() {
         return lapClickCounter;

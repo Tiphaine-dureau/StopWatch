@@ -19,7 +19,6 @@ public class Chrono extends JFrame {
     //Le SwingWorker qui va permettre de lancer le chrono en Background pour ne pas bloquer l'application
     private SwingWorker<Void, Integer> worker;
     private ChronoModel chronoModel;
-    private TimerModel timerModel;
 
 
     //Constructeur classe Chrono
@@ -35,8 +34,6 @@ public class Chrono extends JFrame {
         this.setContentPane(container);
         this.setVisible(true);
         this.chronoModel = new ChronoModel();
-        this.timerModel = new TimerModel();
-
     }
 
     // TODO View
@@ -111,11 +108,11 @@ public class Chrono extends JFrame {
                 while (!isCancelled()) {
                     chronoModel.setCurrentTimeInMilliseconds(System.currentTimeMillis() - chronoModel.getSavedTimeInMilliseconds());
                     chronoModel.setCurrentTimeInMilliseconds(chronoModel.getCurrentTimeInMilliseconds() / 10);
-                    timerModel.setMilisecond(chronoModel.getCurrentTimeInMilliseconds() % 100);
-                    timerModel.setSecond(chronoModel.getCurrentTimeInMilliseconds() / 100);
-                    timerModel.setMinute(timerModel.getSecond()/60);
-                    timerModel.setHour(timerModel.getMinute()/60);
-                    screen[0].setText(String.format("%02d", timerModel.getHour()) + ":" + String.format("%02d", timerModel.getMinute()) + ":" + String.format("%02d", timerModel.getSecond()) + ":" + String.format("%02d", timerModel.getMilisecond()));
+                    chronoModel.getTimerModel().setMillisecond(chronoModel.getCurrentTimeInMilliseconds() % 100);
+                    chronoModel.getTimerModel().setSecond(chronoModel.getCurrentTimeInMilliseconds() / 100);
+                    chronoModel.getTimerModel().setMinute(chronoModel.getTimerModel().getSecond()/60);
+                    chronoModel.getTimerModel().setHour(chronoModel.getTimerModel().getMinute()/60);
+                    screen[0].setText(String.format("%02d", chronoModel.getTimerModel().getHour()) + ":" + String.format("%02d", chronoModel.getTimerModel().getMinute()) + ":" + String.format("%02d", chronoModel.getTimerModel().getSecond()) + ":" + String.format("%02d", chronoModel.getTimerModel().getMillisecond()));
                     //screen[0].paintImmediately(screen[0].getVisibleRect()); ENLEVÉE CAR FAIT BUGUER LE VISUEL
                 }
                 return null;
@@ -145,7 +142,7 @@ public class Chrono extends JFrame {
         public void actionPerformed(ActionEvent arg0) {
             if (chronoModel.getLapClickCounter() == 3)
                 jButtons[1].setEnabled(false);
-            screen[chronoModel.getLapClickCounter()].setText(chronoModel.getLapClickCounter() + ":" + String.format("%02d", timerModel.getHour()) + ":" + String.format("%02d", timerModel.getMinute()) + ":" + String.format("%02d", timerModel.getSecond()) + ":" + String.format("%02d", timerModel.getMilisecond()));
+            screen[chronoModel.getLapClickCounter()].setText(chronoModel.getLapClickCounter() + ":" + String.format("%02d", chronoModel.getTimerModel().getHour()) + ":" + String.format("%02d", chronoModel.getTimerModel().getMinute()) + ":" + String.format("%02d", chronoModel.getTimerModel().getSecond()) + ":" + String.format("%02d", chronoModel.getTimerModel().getMillisecond()));
             //screen[lap].paintImmediately(screen[lap].getVisibleRect()); ENLEVÉE CAR FAIT BUGUER LE VISUEL
             chronoModel.setLapClickCounter(chronoModel.getLapClickCounter() +1);
         }
@@ -176,10 +173,10 @@ public class Chrono extends JFrame {
     class ResetListener implements ActionListener {
         public void actionPerformed(ActionEvent arg0) {
             worker.cancel(true);
-            timerModel.setHour(0);
-            timerModel.setMinute(0);
-            timerModel.setSecond(0);
-            timerModel.setMilisecond(0);
+            chronoModel.getTimerModel().setHour(0);
+            chronoModel.getTimerModel().setMinute(0);
+            chronoModel.getTimerModel().setSecond(0);
+            chronoModel.getTimerModel().setMillisecond(0);
             chronoModel.setSavedTimeInMillisecondsOnBreakStart(0);
             chronoModel.setSavedTimeInMillisecondsOnBreakEnd(0);
             chronoModel.setLapClickCounter(1);
