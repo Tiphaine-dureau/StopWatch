@@ -10,7 +10,6 @@ public class ResumeActionController extends ActionController {
     @Override
     public void actionPerformed(ActionEvent e) {
         System.out.println("perform action RESUME");
-        this.isEnabled = false;
         actionExecution.onActionPerformed();
     }
 }

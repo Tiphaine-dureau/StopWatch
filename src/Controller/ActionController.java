@@ -2,7 +2,6 @@ package Controller;
 
 import View.ActionView;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public abstract class ActionController implements ActionListener {
@@ -10,11 +9,17 @@ public abstract class ActionController implements ActionListener {
     protected Boolean isEnabled;
     public ActionExecution actionExecution;
 
+    // Constructeur
     public ActionController(String label) {
-        this.isEnabled = false;
         this.actionView = new ActionView(label);
         this.actionView.getButton().addActionListener(this);
         this.actionExecution = () -> System.out.println("on action execution");
+        updateEnabled(false);
+    }
+
+    public void updateEnabled(Boolean isEnabled){
+        this.isEnabled = isEnabled;
+        actionView.toggleButton(this.isEnabled);
     }
 
     public ActionView getActionView() {

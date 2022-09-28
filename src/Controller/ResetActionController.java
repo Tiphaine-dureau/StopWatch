@@ -10,7 +10,6 @@ public class ResetActionController extends ActionController {
     @Override
     public void actionPerformed(ActionEvent e) {
         System.out.println("perform action RESET");
-        this.isEnabled = false;
         actionExecution.onActionPerformed();
     }
 }

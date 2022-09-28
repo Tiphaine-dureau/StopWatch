@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 public class LapActionController extends ActionController {
     public LapActionController() {
         super("LAP");
+
     }
 
     @Override

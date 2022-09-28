@@ -126,10 +126,9 @@ public class ChronoController extends JFrame {
             chronoModel.setSavedTimeInMilliseconds(System.currentTimeMillis());
             initializeWorker();
             worker.execute();
-            jButtons[0].setEnabled(false); // TODO to remove
-            jButtons[1].setEnabled(true);
-            jButtons[2].setEnabled(true);
-            jButtons[4].setEnabled(true);
+            controllers.get(1).updateEnabled(true);
+            controllers.get(2).updateEnabled(true);
+            controllers.get(4).updateEnabled(true);
         };
         // LAP
         controllers.get(1).actionExecution = () -> {
