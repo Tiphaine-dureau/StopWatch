@@ -10,6 +10,10 @@ public class ActionView {
     public ActionView(String label) {
         this.label = label;
         this.isEnabled = false;
-        this.button = new JButton();
+        this.button = new JButton(label);
+    }
+
+    public JButton getButton() {
+        return button;
     }
 }
