@@ -133,7 +133,7 @@ public class ChronoController extends JFrame {
         // LAP
         controllers.get(1).actionExecution = () -> {
             if (chronoModel.getLapClickCounter() == 3) {
-                jButtons[1].setEnabled(false);
+                controllers.get(1).updateEnabled(false);
             }
             screen[chronoModel.getLapClickCounter()].setText(chronoModel.getLapClickCounter() + ":" + String.format("%02d", chronoModel.getTimerModel().getHour()) + ":" + String.format("%02d", chronoModel.getTimerModel().getMinute()) + ":" + String.format("%02d", chronoModel.getTimerModel().getSecond()) + ":" + String.format("%02d", chronoModel.getTimerModel().getMillisecond()));
             //screen[lap].paintImmediately(screen[lap].getVisibleRect()); ENLEVÉE CAR FAIT BUGUER LE VISUEL
@@ -143,16 +143,16 @@ public class ChronoController extends JFrame {
         controllers.get(2).actionExecution = () -> {
             worker.cancel(true);
             chronoModel.setSavedTimeInMillisecondsOnBreakStart(System.currentTimeMillis());
-            jButtons[2].setEnabled(false);
-            jButtons[3].setEnabled(true);
+            controllers.get(2).updateEnabled(false);
+            controllers.get(3).updateEnabled(true);
         };
         // RESUME
         controllers.get(3).actionExecution = () -> {
             chronoModel.setSavedTimeInMillisecondsOnBreakEnd(System.currentTimeMillis());
             initializeWorker();
             worker.execute();
-            jButtons[2].setEnabled(true);
-            jButtons[3].setEnabled(false);
+            controllers.get(2).updateEnabled(true);
+            controllers.get(3).updateEnabled(false);
         };
         // RESET
         controllers.get(4).actionExecution = () -> {
@@ -170,10 +170,10 @@ public class ChronoController extends JFrame {
                 } else {
                     screen[i].setText(i + " : 00:00:00:00");
                 }
-                jButtons[i].setEnabled(false);
+                controllers.get(i).updateEnabled(false);
             }
-            jButtons[0].setEnabled(true);
-            jButtons[4].setEnabled(false);
+            controllers.get(0).updateEnabled(true);
+            controllers.get(4).updateEnabled(false);
         };
     }
 
