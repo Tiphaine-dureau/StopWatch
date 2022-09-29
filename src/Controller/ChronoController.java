@@ -1,6 +1,7 @@
 package Controller;
 
 import Model.ChronoModel;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +63,6 @@ public class ChronoController extends JFrame {
             panScreen.add(screen[i]);
         }
 
-        //On ajoute après les deux sous conteneurs au conteneur principal container
         container.add(panScreen, BorderLayout.NORTH);
         container.add(buttonsPanel, BorderLayout.CENTER);
         List<ActionController> actionControllers = createActionControllers();
@@ -90,8 +90,7 @@ public class ChronoController extends JFrame {
         controllers.forEach((ActionController controller) -> buttonsPanel.add(controller.getActionView().getButton()));
     }
 
-    private void addActionExecutions(List<ActionController> controllers) {
-        // START
+    private void addStartActionExecution(List<ActionController> controllers) {
         controllers.get(0).actionExecution = () -> {
             chronoModel.setSavedTimeInMilliseconds(System.currentTimeMillis());
             initializeWorker();
@@ -100,7 +99,9 @@ public class ChronoController extends JFrame {
             controllers.get(2).updateEnabled(true);
             controllers.get(4).updateEnabled(true);
         };
-        // LAP
+    }
+
+    private void addLapActionExecution(List<ActionController> controllers) {
         controllers.get(1).actionExecution = () -> {
             if (chronoModel.getLapClickCounter() == 3) {
                 controllers.get(1).updateEnabled(false);
@@ -109,14 +110,18 @@ public class ChronoController extends JFrame {
             //screen[lap].paintImmediately(screen[lap].getVisibleRect()); ENLEVÉE CAR FAIT BUGUER LE VISUEL
             chronoModel.setLapClickCounter(chronoModel.getLapClickCounter() + 1);
         };
-        // STOP
+    }
+
+    private void addStopActionExecution(List<ActionController> controllers) {
         controllers.get(2).actionExecution = () -> {
             worker.cancel(true);
             chronoModel.setSavedTimeInMillisecondsOnBreakStart(System.currentTimeMillis());
             controllers.get(2).updateEnabled(false);
             controllers.get(3).updateEnabled(true);
         };
-        // RESUME
+    }
+
+    private void addResumeActionExecution(List<ActionController> controllers) {
         controllers.get(3).actionExecution = () -> {
             chronoModel.setSavedTimeInMillisecondsOnBreakEnd(System.currentTimeMillis());
             initializeWorker();
@@ -124,7 +129,9 @@ public class ChronoController extends JFrame {
             controllers.get(2).updateEnabled(true);
             controllers.get(3).updateEnabled(false);
         };
-        // RESET
+    }
+
+    private void addResetActionExecution(List<ActionController> controllers) {
         controllers.get(4).actionExecution = () -> {
             worker.cancel(true);
             chronoModel.getTimerModel().setHour(0);
@@ -145,6 +152,14 @@ public class ChronoController extends JFrame {
             controllers.get(0).updateEnabled(true);
             controllers.get(4).updateEnabled(false);
         };
+    }
+
+    private void addActionExecutions(List<ActionController> controllers) {
+        addStartActionExecution(controllers);
+        addLapActionExecution(controllers);
+        addStopActionExecution(controllers);
+        addResumeActionExecution(controllers);
+        addResetActionExecution(controllers);
     }
 
     private void initializeWorker() {
