@@ -1,6 +1,6 @@
-package Controller;
+package controller;
 
-import View.ActionView;
+import view.ActionView;
 
 import java.awt.*;
 import java.awt.event.ActionListener;

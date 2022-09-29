@@ -1,4 +1,4 @@
-package Model;
+package model;
 
 public class TimerModel {
     //Les variables qui vont permettre de formater ce temps en format : hh : mm :ss : mili

@@ -1,7 +1,7 @@
-package Controller;
+package controller;
 
-import Model.ChronoModel;
-import View.ChronoView;
+import model.ChronoModel;
+import view.ChronoView;
 
 import javax.swing.*;
 import java.util.ArrayList;
