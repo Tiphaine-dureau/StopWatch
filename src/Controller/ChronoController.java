@@ -1,69 +1,44 @@
 package Controller;
 
 import Model.ChronoModel;
+import View.ChronoView;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.*;
 
 public class ChronoController extends JFrame {
-    private JPanel container = new JPanel();
-    // 4 JLabel : 1 pour le chrono principal et 3 pour les 3 lap en dessous
-    private JLabel[] screen = new JLabel[4];
-    //Le SwingWorker qui va permettre de lancer le chrono en Background pour ne pas bloquer l'application
+    private final JPanel container = new JPanel();
     private SwingWorker<Void, Integer> worker;
-    private ChronoModel chronoModel;
+    private final ChronoModel chronoModel;
+    private final ChronoView chronoView;
 
-
+    // Constructeur
     public ChronoController() {
         this.setSize(350, 435);
         this.setTitle("Chronomètre");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setResizable(false);
-        //On initialise le conteneur avec tous les composants
+        this.chronoModel = new ChronoModel();
+        this.chronoView = new ChronoView();
         initComponent();
-        //On ajoute le conteneur à la fenêtre;
         this.setContentPane(container);
         this.setVisible(true);
-        this.chronoModel = new ChronoModel();
+
     }
 
-    // TODO View
-
     private void initComponent() {
-        //On définit les 2 sous conteneurs buttons qui vont contenir les boutons et panEcran qui va contenir les jlabel d'affichage
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setPreferredSize(new Dimension(320, 225));
-        JPanel panScreen = new JPanel();
-        //Dimension de l'écran blanc qui contient le temps
-        panScreen.setPreferredSize(new Dimension(320, 230));
-        panScreen.setBorder(BorderFactory.createLineBorder(Color.black, 2));
-        panScreen.setBackground(Color.WHITE);
-
-        //On definit la police d'écriture à utiliser
-        Font police = new Font("Arial", Font.BOLD, 50);
-        Font police2 = new Font("Arial", Font.BOLD, 25);
-
-        //On initialise les JLABELS avec le texte de départ, la police et la dimension et on les ajoute au sous conteneur correspondant
-        for (int i = 0; i < 4; i++) {
-            if (i == 0) {
-                screen[i] = new JLabel("00:00:00:00");
-                screen[i].setFont(police);
-            } else {
-                screen[i] = new JLabel(i + " : 00:00:00:00");
-                screen[i].setFont(police2);
-            }
-
-            //On aligne les informations au centre dans le Jlabel
-            screen[i].setHorizontalAlignment(JLabel.CENTER);
-            //Espace entre les temps affichés
-            screen[i].setPreferredSize(new Dimension(300, 50));
-            panScreen.add(screen[i]);
-        }
-
-        container.add(panScreen, BorderLayout.NORTH);
+        JPanel mainPanel = new JPanel();
+        mainPanel.setPreferredSize(new Dimension(320, 230));
+        mainPanel.setBorder(BorderFactory.createLineBorder(Color.black, 2));
+        mainPanel.setBackground(Color.WHITE);
+        mainPanel.add(chronoView.getChronoLabel());
+        chronoView.getLapLabels().forEach(mainPanel::add); // Method reference
+        container.add(mainPanel, BorderLayout.NORTH);
         container.add(buttonsPanel, BorderLayout.CENTER);
         List<ActionController> actionControllers = createActionControllers();
         addActionButtonsToActionsPanel(actionControllers, buttonsPanel);
@@ -77,7 +52,6 @@ public class ChronoController extends JFrame {
         StopActionController stopActionController = new StopActionController();
         ResumeActionController resumeActionController = new ResumeActionController();
         ResetActionController resetActionController = new ResetActionController();
-
         controllers.add(startActionController);
         controllers.add(lapActionController);
         controllers.add(stopActionController);
@@ -102,13 +76,19 @@ public class ChronoController extends JFrame {
     }
 
     private void addLapActionExecution(List<ActionController> controllers) {
-        controllers.get(1).actionExecution = () -> {
-            if (chronoModel.getLapClickCounter() == 3) {
-                controllers.get(1).updateEnabled(false);
+        LapActionController lapActionController = (LapActionController) controllers.get(1);
+        lapActionController.actionExecution = () -> {
+            if (lapActionController.getLapClickCounter() == 2) {
+                lapActionController.updateEnabled(false);
             }
-            screen[chronoModel.getLapClickCounter()].setText(chronoModel.getLapClickCounter() + ":" + String.format("%02d", chronoModel.getTimerModel().getHour()) + ":" + String.format("%02d", chronoModel.getTimerModel().getMinute()) + ":" + String.format("%02d", chronoModel.getTimerModel().getSecond()) + ":" + String.format("%02d", chronoModel.getTimerModel().getMillisecond()));
-            //screen[lap].paintImmediately(screen[lap].getVisibleRect()); ENLEVÉE CAR FAIT BUGUER LE VISUEL
-            chronoModel.setLapClickCounter(chronoModel.getLapClickCounter() + 1);
+            chronoView.updateLapLabelText(
+                    lapActionController.getLapClickCounter(),
+                    chronoModel.getTimerModel().getHour(),
+                    chronoModel.getTimerModel().getMinute(),
+                    chronoModel.getTimerModel().getSecond(),
+                    chronoModel.getTimerModel().getMillisecond()
+            );
+            lapActionController.setLapClickCounter(lapActionController.getLapClickCounter() + 1);
         };
     }
 
@@ -132,6 +112,7 @@ public class ChronoController extends JFrame {
     }
 
     private void addResetActionExecution(List<ActionController> controllers) {
+        LapActionController lapActionController = (LapActionController) controllers.get(1);
         controllers.get(4).actionExecution = () -> {
             worker.cancel(true);
             chronoModel.getTimerModel().setHour(0);
@@ -140,17 +121,15 @@ public class ChronoController extends JFrame {
             chronoModel.getTimerModel().setMillisecond(0);
             chronoModel.setSavedTimeInMillisecondsOnBreakStart(0);
             chronoModel.setSavedTimeInMillisecondsOnBreakEnd(0);
-            chronoModel.setLapClickCounter(1);
-            for (int i = 0; i < 4; i++) {
-                if (i == 0) {
-                    screen[i].setText("00:00:00:00");
-                } else {
-                    screen[i].setText(i + " : 00:00:00:00");
-                }
-                controllers.get(i).updateEnabled(false);
-            }
+            lapActionController.setLapClickCounter(0);
+
             controllers.get(0).updateEnabled(true);
+            controllers.get(1).updateEnabled(false);
+            controllers.get(2).updateEnabled(false);
+            controllers.get(3).updateEnabled(false);
             controllers.get(4).updateEnabled(false);
+
+            chronoView.resetLabels();
         };
     }
 
@@ -166,7 +145,6 @@ public class ChronoController extends JFrame {
         worker = new SwingWorker<>() {
             @Override
             protected Void doInBackground() throws Exception {
-                //savedTimeInMilliseconds = savedTimeInMilliseconds + (savedTimeInMillisecondsOnBreakEnd - savedTimeInMillisecondsOnBreakStart);
                 chronoModel.setSavedTimeInMilliseconds(chronoModel.getSavedTimeInMilliseconds() + (chronoModel.getSavedTimeInMillisecondsOnBreakEnd() - chronoModel.getSavedTimeInMillisecondsOnBreakStart()));
                 chronoModel.setSavedTimeInMillisecondsOnBreakStart(0);
                 chronoModel.setSavedTimeInMillisecondsOnBreakEnd(0);
@@ -179,8 +157,12 @@ public class ChronoController extends JFrame {
                     chronoModel.getTimerModel().setSecond(chronoModel.getCurrentTimeInMilliseconds() / 100);
                     chronoModel.getTimerModel().setMinute(chronoModel.getTimerModel().getSecond() / 60);
                     chronoModel.getTimerModel().setHour(chronoModel.getTimerModel().getMinute() / 60);
-                    screen[0].setText(String.format("%02d", chronoModel.getTimerModel().getHour()) + ":" + String.format("%02d", chronoModel.getTimerModel().getMinute()) + ":" + String.format("%02d", chronoModel.getTimerModel().getSecond()) + ":" + String.format("%02d", chronoModel.getTimerModel().getMillisecond()));
-                    //screen[0].paintImmediately(screen[0].getVisibleRect()); ENLEVÉE CAR FAIT BUGUER LE VISUEL
+                    chronoView.updateChronoLabelText(
+                            chronoModel.getTimerModel().getHour(),
+                            chronoModel.getTimerModel().getMinute(),
+                            chronoModel.getTimerModel().getSecond(),
+                            chronoModel.getTimerModel().getMillisecond()
+                    );
                 }
                 return null;
             }

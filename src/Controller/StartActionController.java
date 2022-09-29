@@ -13,7 +13,7 @@ public class StartActionController extends ActionController {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println("perform action START child");
+        System.out.println("perform action START");
         updateEnabled(false);
         actionExecution.onActionPerformed();
     }
