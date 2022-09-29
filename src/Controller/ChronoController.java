@@ -19,7 +19,8 @@ public class ChronoController extends JFrame {
     // 4 JLabel : 1 pour le chrono principal et 3 pour les 3 lap en dessous
     private JLabel[] screen = new JLabel[4];
     //Cette variable stocke la dimension des boutons:
-    private Dimension dimension = new Dimension(90, 70);
+    //taille des boutons
+    private Dimension dimension = new Dimension(90, 70); // TODO
     //Le SwingWorker qui va permettre de lancer le chrono en Background pour ne pas bloquer l'application
     private SwingWorker<Void, Integer> worker;
     private ChronoModel chronoModel;
@@ -46,6 +47,7 @@ public class ChronoController extends JFrame {
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setPreferredSize(new Dimension(320, 225));
         JPanel panScreen = new JPanel();
+        //Dimension de l'écran blanc qui contient le temps
         panScreen.setPreferredSize(new Dimension(320, 230));
         panScreen.setBorder(BorderFactory.createLineBorder(Color.black, 2));
         panScreen.setBackground(Color.WHITE);
@@ -66,11 +68,13 @@ public class ChronoController extends JFrame {
 
             //On aligne les informations au centre dans le Jlabel
             screen[i].setHorizontalAlignment(JLabel.CENTER);
+            //Espace entre les temps affichés
             screen[i].setPreferredSize(new Dimension(300, 50));
             panScreen.add(screen[i]);
         }
 
         //On parcourt le tableau initialisé afin de créer nos boutons avec le texte, la dimension et on les ajoute au sous conteneur
+        //TODO
         for (int i = 0; i < arrayOfString.length; i++) {
             jButtons[i] = new JButton(arrayOfString[i]);
             jButtons[i].setPreferredSize(dimension);

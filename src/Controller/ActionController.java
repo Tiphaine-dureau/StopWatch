@@ -2,6 +2,7 @@ package Controller;
 
 import View.ActionView;
 
+import java.awt.*;
 import java.awt.event.ActionListener;
 
 public abstract class ActionController implements ActionListener {
@@ -10,8 +11,8 @@ public abstract class ActionController implements ActionListener {
     public ActionExecution actionExecution;
 
     // Constructeur
-    public ActionController(String label) {
-        this.actionView = new ActionView(label);
+    public ActionController(String label, Color color) {
+        this.actionView = new ActionView(label, color);
         this.actionView.getButton().addActionListener(this);
         this.actionExecution = () -> System.out.println("on action execution");
         updateEnabled(false);

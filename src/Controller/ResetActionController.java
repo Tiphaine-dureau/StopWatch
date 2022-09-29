@@ -1,10 +1,11 @@
 package Controller;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class ResetActionController extends ActionController {
     public ResetActionController() {
-        super("RESET");
+        super("RESET", Color.DARK_GRAY);
     }
 
     @Override

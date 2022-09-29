@@ -1,10 +1,11 @@
 package Controller;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class LapActionController extends ActionController {
     public LapActionController() {
-        super("LAP");
+        super("LAP", Color.MAGENTA);
 
     }
 

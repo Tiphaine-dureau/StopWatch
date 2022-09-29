@@ -1,10 +1,11 @@
 package Controller;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class StopActionController extends ActionController {
     public StopActionController() {
-        super("STOP");
+        super("STOP", Color.BLUE);
     }
 
     @Override
