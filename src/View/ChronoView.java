@@ -6,25 +6,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChronoView {
+    private final JPanel containerPanel;
+    private final JPanel timerPanel;
+    private final JPanel buttonsPanel;
     private final JLabel chronoLabel;
     private final List<JLabel> lapLabels;
 
     // Constructeur
     public ChronoView() {
         chronoLabel = new JLabel();
-        List<JLabel> lapLabels = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            JLabel label = new JLabel();
-            label.setHorizontalAlignment(JLabel.CENTER);
-            label.setPreferredSize(new Dimension(300, 50));
-            label.setFont(new Font("Arial", Font.BOLD, 25));
-            lapLabels.add(label);
-        }
-        this.lapLabels = lapLabels;
-        chronoLabel.setHorizontalAlignment(JLabel.CENTER);
-        chronoLabel.setPreferredSize(new Dimension(300, 50));
-        chronoLabel.setFont(new Font("Arial", Font.BOLD, 50));
-
+        timerPanel = new JPanel();
+        lapLabels = new ArrayList<>();
+        containerPanel = new JPanel();
+        buttonsPanel = new JPanel();
+        configureContainerPanel();
+        configureTimerPanel();
+        configureButtonsPanel();
+        configureChronoLabel();
+        configureLapLabels();
         resetLabels();
     }
 
@@ -54,11 +53,44 @@ public class ChronoView {
                 formattedMillisecond;
     }
 
-    public JLabel getChronoLabel() {
-        return chronoLabel;
+    private void configureTimerPanel() {
+        this.timerPanel.setPreferredSize(new Dimension(320, 230));
+        this.timerPanel.setBorder(BorderFactory.createLineBorder(Color.black, 2));
+        this.timerPanel.setBackground(Color.WHITE);
+        this.timerPanel.add(chronoLabel);
     }
 
-    public List<JLabel> getLapLabels() {
-        return lapLabels;
+    private void configureChronoLabel() {
+        this.chronoLabel.setHorizontalAlignment(JLabel.CENTER);
+        this.chronoLabel.setPreferredSize(new Dimension(300, 50));
+        this.chronoLabel.setFont(new Font("Arial", Font.BOLD, 50));
+    }
+
+    private void configureLapLabels() {
+        for (int i = 0; i < 3; i++) {
+            JLabel label = new JLabel();
+            label.setHorizontalAlignment(JLabel.CENTER);
+            label.setPreferredSize(new Dimension(300, 50));
+            label.setFont(new Font("Arial", Font.BOLD, 25));
+            this.lapLabels.add(label);
+        }
+        this.lapLabels.forEach(timerPanel::add); // Method reference
+    }
+
+    private void configureContainerPanel() {
+        this.containerPanel.add(this.timerPanel, BorderLayout.NORTH);
+        this.containerPanel.add(this.buttonsPanel, BorderLayout.CENTER);
+    }
+
+    private void configureButtonsPanel() {
+        this.buttonsPanel.setPreferredSize(new Dimension(320, 225));
+    }
+
+    public JPanel getContainerPanel() {
+        return containerPanel;
+    }
+
+    public JPanel getButtonsPanel() {
+        return buttonsPanel;
     }
 }

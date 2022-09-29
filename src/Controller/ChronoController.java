@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChronoController extends JFrame {
-    private final JPanel container = new JPanel();
     private SwingWorker<Void, Integer> worker;
     private final ChronoModel chronoModel;
     private final ChronoView chronoView;
@@ -23,26 +22,12 @@ public class ChronoController extends JFrame {
         this.setResizable(false);
         this.chronoModel = new ChronoModel();
         this.chronoView = new ChronoView();
-        initComponent();
-        this.setContentPane(container);
+        List<ActionController> actionControllers = createActionControllers();
+        addActionButtonsToActionsPanel(actionControllers, chronoView.getButtonsPanel());
+        addActionExecutions(actionControllers);
+        this.setContentPane(chronoView.getContainerPanel());
         this.setVisible(true);
 
-    }
-
-    private void initComponent() {
-        JPanel buttonsPanel = new JPanel();
-        buttonsPanel.setPreferredSize(new Dimension(320, 225));
-        JPanel mainPanel = new JPanel();
-        mainPanel.setPreferredSize(new Dimension(320, 230));
-        mainPanel.setBorder(BorderFactory.createLineBorder(Color.black, 2));
-        mainPanel.setBackground(Color.WHITE);
-        mainPanel.add(chronoView.getChronoLabel());
-        chronoView.getLapLabels().forEach(mainPanel::add); // Method reference
-        container.add(mainPanel, BorderLayout.NORTH);
-        container.add(buttonsPanel, BorderLayout.CENTER);
-        List<ActionController> actionControllers = createActionControllers();
-        addActionButtonsToActionsPanel(actionControllers, buttonsPanel);
-        addActionExecutions(actionControllers);
     }
 
     private List<ActionController> createActionControllers() {
