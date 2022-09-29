@@ -5,7 +5,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChronoView {
+public class ChronoView extends JFrame {
     private final JPanel containerPanel;
     private final JPanel timerPanel;
     private final JPanel buttonsPanel;
@@ -19,12 +19,10 @@ public class ChronoView {
         lapLabels = new ArrayList<>();
         containerPanel = new JPanel();
         buttonsPanel = new JPanel();
-        configureContainerPanel();
         configureTimerPanel();
         configureButtonsPanel();
-        configureChronoLabel();
-        configureLapLabels();
-        resetLabels();
+        configureLabels();
+        configureContainerPanel();
     }
 
     public void resetLabels() {
@@ -51,6 +49,22 @@ public class ChronoView {
                 formattedMinute + ":" +
                 formattedSecond + ":" +
                 formattedMillisecond;
+    }
+
+    public void configureAndDisplayFrame() {
+        this.setSize(350, 435);
+        this.setTitle("Chronomètre");
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setLocationRelativeTo(null);
+        this.setResizable(false);
+        this.setContentPane(containerPanel);
+        this.setVisible(true);
+    }
+
+    private void configureLabels() {
+        configureChronoLabel();
+        configureLapLabels();
+        resetLabels();
     }
 
     private void configureTimerPanel() {
@@ -84,10 +98,6 @@ public class ChronoView {
 
     private void configureButtonsPanel() {
         this.buttonsPanel.setPreferredSize(new Dimension(320, 225));
-    }
-
-    public JPanel getContainerPanel() {
-        return containerPanel;
     }
 
     public JPanel getButtonsPanel() {

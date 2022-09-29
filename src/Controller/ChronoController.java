@@ -4,30 +4,22 @@ import Model.ChronoModel;
 import View.ChronoView;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChronoController extends JFrame {
+public class ChronoController {
     private SwingWorker<Void, Integer> worker;
     private final ChronoModel chronoModel;
     private final ChronoView chronoView;
 
     // Constructeur
     public ChronoController() {
-        this.setSize(350, 435);
-        this.setTitle("Chronomètre");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setLocationRelativeTo(null);
-        this.setResizable(false);
         this.chronoModel = new ChronoModel();
         this.chronoView = new ChronoView();
         List<ActionController> actionControllers = createActionControllers();
-        addActionButtonsToActionsPanel(actionControllers, chronoView.getButtonsPanel());
+        addActionButtonsToActionsPanel(actionControllers);
         addActionExecutions(actionControllers);
-        this.setContentPane(chronoView.getContainerPanel());
-        this.setVisible(true);
-
+        chronoView.configureAndDisplayFrame();
     }
 
     private List<ActionController> createActionControllers() {
@@ -45,8 +37,8 @@ public class ChronoController extends JFrame {
         return controllers;
     }
 
-    private void addActionButtonsToActionsPanel(List<ActionController> controllers, JPanel buttonsPanel) {
-        controllers.forEach((ActionController controller) -> buttonsPanel.add(controller.getActionView().getButton()));
+    private void addActionButtonsToActionsPanel(List<ActionController> controllers) {
+        controllers.forEach((ActionController controller) -> chronoView.getButtonsPanel().add(controller.getActionView().getButton()));
     }
 
     private void addStartActionExecution(List<ActionController> controllers) {

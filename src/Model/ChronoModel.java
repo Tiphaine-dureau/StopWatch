@@ -1,13 +1,11 @@
 package Model;
 
 public class ChronoModel {
-    private TimerModel timerModel;
-
-    //Les variables qui vont permettre de calculer le temps et simuler le chrono :
-    long savedTimeInMilliseconds;
-    long currentTimeInMilliseconds;
-    long savedTimeInMillisecondsOnBreakStart;
-    long savedTimeInMillisecondsOnBreakEnd;
+    private final TimerModel timerModel;
+    private long savedTimeInMilliseconds;
+    private long currentTimeInMilliseconds;
+    private long savedTimeInMillisecondsOnBreakStart;
+    private long savedTimeInMillisecondsOnBreakEnd;
 
     public ChronoModel() {
         this.timerModel = new TimerModel();
@@ -19,10 +17,6 @@ public class ChronoModel {
 
     public TimerModel getTimerModel() {
         return timerModel;
-    }
-
-    public void setTimerModel(TimerModel timerModel) {
-        this.timerModel = timerModel;
     }
 
     public long getSavedTimeInMilliseconds() {
